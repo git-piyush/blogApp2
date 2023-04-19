@@ -9,7 +9,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -57,6 +60,19 @@ public class PostController {
 		 List<PostResponseDTO> allPostResponse = new ArrayList<PostResponseDTO>();
 		 allPostResponse = allPost.stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList()); 
 		 return allPostResponse;
+	}
+	
+	@GetMapping("/getPost/{postId}")
+	public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long postId) {
+		Post post = postService.findPostById(postId);
+		return new ResponseEntity<>(mapPostToPostResponseDTO(post), HttpStatus.OK);
+	}
+	
+	@PutMapping("/updatePost/{postId}")
+	public String updatePost(@RequestBody PostRequestDTO post, @PathVariable Long postId) {
+		Post updatePost = postService.updatePost(postId, mapPostRequestDTOToPostEntity(post));
+		return "Post Updated Successfully";
+		
 	}
 	
 	//convert postRequestDTO to Post Entity
