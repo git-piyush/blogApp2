@@ -1,5 +1,6 @@
 package com.blog.controller;
 
+import java.net.Authenticator.RequestorType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -69,10 +70,15 @@ public class PostController {
 	}
 	
 	@PutMapping("/updatePost/{postId}")
-	public String updatePost(@RequestBody PostRequestDTO post, @PathVariable Long postId) {
+	public ResponseEntity<PostResponseDTO> updatePost(@RequestBody PostRequestDTO post, @PathVariable Long postId) {
 		Post updatePost = postService.updatePost(postId, mapPostRequestDTOToPostEntity(post));
-		return "Post Updated Successfully";
-		
+		return new ResponseEntity<>(mapPostToPostResponseDTO(updatePost), HttpStatus.OK);		
+	}
+	
+	@RequestMapping(value="/deletePost/{postId}",method = RequestMethod.DELETE)
+	public String deletePost(@PathVariable Long postId) {
+		Post post = postService.deletePost(postId);
+		return "Post with Id "+postId+" has been deleted sucessfully";
 	}
 	
 	//convert postRequestDTO to Post Entity

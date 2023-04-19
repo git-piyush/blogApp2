@@ -17,5 +17,7 @@ public interface PostService {
 	public Post findPostById(Long postId);
 	
 	public Post updatePost(Long postId, Post post);
+
+	public Post deletePost(Long postId);
 	
 }
