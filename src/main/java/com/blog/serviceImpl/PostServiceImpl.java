@@ -2,13 +2,19 @@ package com.blog.serviceImpl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.Post;
 import com.blog.exception.ResourceNotFoundException;
 import com.blog.repository.PostRepository;
+import com.blog.requestDTO.PostRequestDTO;
+import com.blog.responseDTO.PostResponseDTO;
 import com.blog.service.PostService;
 
 @Service
@@ -18,38 +24,35 @@ public class PostServiceImpl implements PostService {
 	private PostRepository postRepository;
 
 	@Override
-	public Post savePost(Post post) {
-		if (postRepository != null) {
-			try {
-				return postRepository.save(post);
-			} catch (Exception e) {
-				//
-			}
+	public PostResponseDTO savePost(PostRequestDTO postRequestDTO) {
+		Post newPost = mapPostRequestDTOToPostEntity(postRequestDTO);
 
-		}
-		return null;
-	}
-
-	@Override
-	public List<Post> getAllPost() {
-		List<Post> allPost = postRepository.findAll();
-		if (allPost != null) {
-			return allPost;
-		}
-		return new ArrayList<Post>();
-	}
-
-	@Override
-	public Post findPostById(Long postId) {
-		//Post post = postRepository.findById(postId).orElseThrow(()-> new ResourceNotFoundException("post", "Post Id", postId));
+		Post post = postRepository.save(newPost);
 		
+		return mapPostToPostResponseDTO(post);
+
+	}
+
+	@Override
+	public List<PostResponseDTO> getAllPost(int pageNo, int pageSize) {
+		
+		Pageable page = PageRequest.of(pageNo, pageSize);
+		Page<Post> allPost = postRepository.findAll(page);
+		if (allPost != null) {
+			return allPost.getContent().stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList());
+		}
+		return new ArrayList<PostResponseDTO>();
+	}
+
+	@Override
+	public PostResponseDTO findPostById(Long postId) {
 		Post post = postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId));
-		return post;
+		return mapPostToPostResponseDTO(post);
 	}
 
 	@Override
-	public Post updatePost(Long postId, Post post) {
+	public PostResponseDTO updatePost(Long postId, PostRequestDTO post) {
 		
 		Post dbPost = postRepository.findById(postId)
 				.orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId));
@@ -59,7 +62,7 @@ public class PostServiceImpl implements PostService {
 		dbPost.setContent(post.getContent());
 		
 		Post updatedPost = postRepository.save(dbPost);
-		return updatedPost;
+		return mapPostToPostResponseDTO(updatedPost);
 	}
 
 	@Override
@@ -68,6 +71,25 @@ public class PostServiceImpl implements PostService {
 				.orElseThrow(() -> new ResourceNotFoundException("Post", "Id", postId));
 		postRepository.deleteById(postId);
 		return dbPost;
+	}
+	
+	//convert postRequestDTO to Post Entity
+	private Post mapPostRequestDTOToPostEntity(PostRequestDTO postRequestDTO) {
+		Post post = new Post();
+		post.setTitle(postRequestDTO.getTitle());
+		post.setDescription(postRequestDTO.getDescription());
+		post.setContent(postRequestDTO.getContent());
+		return post;
+	}
+	
+	//convert Post Entity to postResponseDTO
+	private PostResponseDTO mapPostToPostResponseDTO(Post post) {
+		PostResponseDTO postResponseDTO = new PostResponseDTO();
+		postResponseDTO.setId(post.getId());
+		postResponseDTO.setTitle(post.getTitle());
+		postResponseDTO.setDescription(post.getDescription());
+		postResponseDTO.setContent(post.getContent());
+		return postResponseDTO;
 	}
 	
 }

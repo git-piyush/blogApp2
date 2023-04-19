@@ -5,18 +5,19 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.Post;
-import com.blog.exception.ResourceNotFoundException;
+import com.blog.requestDTO.PostRequestDTO;
+import com.blog.responseDTO.PostResponseDTO;
 
 @Service
 public interface PostService {
 
-	public Post savePost(Post post);
+	public PostResponseDTO savePost(PostRequestDTO postRequestDTO);
 	
-	public List<Post> getAllPost();
+	public List<PostResponseDTO> getAllPost(int pageNo, int pageSize);
 	
-	public Post findPostById(Long postId);
+	public PostResponseDTO findPostById(Long postId);
 	
-	public Post updatePost(Long postId, Post post);
+	public PostResponseDTO updatePost(Long postId, PostRequestDTO post);
 
 	public Post deletePost(Long postId);
 	

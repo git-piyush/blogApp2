@@ -1,9 +1,6 @@
 package com.blog.controller;
 
-import java.net.Authenticator.RequestorType;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -17,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.entity.Post;
@@ -33,46 +31,30 @@ public class PostController {
 	
 	
 	@PostMapping("/savePost")
-	public ResponseEntity saveNewPost(@Valid @RequestBody PostRequestDTO postRequestDTO) {
-		
-		//covert postRequestDTO to post entity
-		/*
-		 * Post post = new Post(); post.setTitle(postRequestDTO.getTitle());
-		 * post.setDescription(postRequestDTO.getDescription());
-		 * post.setContent(postRequestDTO.getContent());
-		 */
-		Post newPost = postService.savePost(mapPostRequestDTOToPostEntity(postRequestDTO));
-		
-		//convert new post to postResponseDTO
-		/*
-		 * PostResponseDTO postResponseDTO = new PostResponseDTO();
-		 * postResponseDTO.setId(newPost.getId());
-		 * postResponseDTO.setTitle(newPost.getTitle());
-		 * postResponseDTO.setDescription(newPost.getDescription());
-		 * postResponseDTO.setContent(newPost.getContent());
-		 */
-		
-		return new ResponseEntity<>(mapPostToPostResponseDTO(newPost), HttpStatus.CREATED);
+	public ResponseEntity<PostResponseDTO> saveNewPost(@Valid @RequestBody PostRequestDTO postRequestDTO) {
+		PostResponseDTO newPost = postService.savePost(postRequestDTO);
+		return new ResponseEntity<>(newPost, HttpStatus.CREATED);
 	}
 	
 	@RequestMapping(value = "/getAllPost",method = RequestMethod.GET)
-	public List<PostResponseDTO> getALLPost(){
-		List<Post> allPost = postService.getAllPost();
-		 List<PostResponseDTO> allPostResponse = new ArrayList<PostResponseDTO>();
-		 allPostResponse = allPost.stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList()); 
-		 return allPostResponse;
+	public List<PostResponseDTO> getALLPost(
+			@RequestParam(value="pageNo", defaultValue = "0", required = false) int pageNo,
+			@RequestParam(value="pageSize", defaultValue = "5", required = false) int pageSize
+			){
+		 List<PostResponseDTO> allPost = postService.getAllPost(pageNo, pageSize);
+		 return allPost;
 	}
 	
 	@GetMapping("/getPost/{postId}")
 	public ResponseEntity<PostResponseDTO> getPostById(@PathVariable Long postId) {
-		Post post = postService.findPostById(postId);
-		return new ResponseEntity<>(mapPostToPostResponseDTO(post), HttpStatus.OK);
+		PostResponseDTO post = postService.findPostById(postId);
+		return new ResponseEntity<PostResponseDTO>(post, HttpStatus.OK);
 	}
 	
 	@PutMapping("/updatePost/{postId}")
 	public ResponseEntity<PostResponseDTO> updatePost(@RequestBody PostRequestDTO post, @PathVariable Long postId) {
-		Post updatePost = postService.updatePost(postId, mapPostRequestDTOToPostEntity(post));
-		return new ResponseEntity<>(mapPostToPostResponseDTO(updatePost), HttpStatus.OK);		
+		PostResponseDTO updatePost = postService.updatePost(postId, post);
+		return new ResponseEntity<PostResponseDTO>(updatePost, HttpStatus.OK);		
 	}
 	
 	@RequestMapping(value="/deletePost/{postId}",method = RequestMethod.DELETE)
@@ -80,24 +62,4 @@ public class PostController {
 		Post post = postService.deletePost(postId);
 		return "Post with Id "+postId+" has been deleted sucessfully";
 	}
-	
-	//convert postRequestDTO to Post Entity
-	private Post mapPostRequestDTOToPostEntity(PostRequestDTO postRequestDTO) {
-		Post post = new Post();
-		post.setTitle(postRequestDTO.getTitle());
-		post.setDescription(postRequestDTO.getDescription());
-		post.setContent(postRequestDTO.getContent());
-		return post;
-	}
-	
-	//convert Post Entity to postResponseDTO
-	private PostResponseDTO mapPostToPostResponseDTO(Post post) {
-		PostResponseDTO postResponseDTO = new PostResponseDTO();
-		postResponseDTO.setId(post.getId());
-		postResponseDTO.setTitle(post.getTitle());
-		postResponseDTO.setDescription(post.getDescription());
-		postResponseDTO.setContent(post.getContent());
-		return postResponseDTO;
-	}
-	
 }
