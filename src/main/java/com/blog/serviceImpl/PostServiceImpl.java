@@ -1,5 +1,8 @@
 package com.blog.serviceImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,15 @@ public class PostServiceImpl implements PostService {
 			
 		}
 		return null;
+	}
+
+	@Override
+	public List<Post> getAllPost() {
+		List<Post> allPost = postRepository.findAll();		
+		if(allPost!=null) {
+			return allPost;
+		}		
+ 		return new ArrayList<Post>();
 	}
 
 }

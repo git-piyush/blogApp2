@@ -30,22 +30,22 @@ public class Post {
 	@Column(name="title", nullable = false)
 	private String title;
 	
-	@Column(name="description")
+	@Column(name="description", nullable = false)
 	private String description;
 	
-	@Column(name="content")
+	@Column(name="content", nullable = false)
 	private String content;
 	
-	@Column(name="createdBy")
+	@Column(name="createdBy", nullable = false)
 	private String createdBy;
 	
-	@Column(name="createdDate")
+	@Column(name="createdDate", nullable = false)
 	private Date createdDate;
 	
-	@Column(name="modifiedBy")
+	@Column(name="modifiedBy", nullable = false)
 	private String modifiedBy;
 	
-	@Column(name="modifiedDate")
+	@Column(name="modifiedDate", nullable = false)
 	private Date modifiedDate;
 	
 	@PreUpdate
