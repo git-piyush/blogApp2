@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.blog.entity.Post;
 import com.blog.requestDTO.PostRequestDTO;
+import com.blog.responseDTO.PostResponse;
 import com.blog.responseDTO.PostResponseDTO;
 
 @Service
@@ -13,7 +14,7 @@ public interface PostService {
 
 	public PostResponseDTO savePost(PostRequestDTO postRequestDTO);
 	
-	public List<PostResponseDTO> getAllPost(int pageNo, int pageSize);
+	public PostResponse getAllPost(int pageNo, int pageSize);
 	
 	public PostResponseDTO findPostById(Long postId);
 	

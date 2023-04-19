@@ -14,6 +14,7 @@ import com.blog.entity.Post;
 import com.blog.exception.ResourceNotFoundException;
 import com.blog.repository.PostRepository;
 import com.blog.requestDTO.PostRequestDTO;
+import com.blog.responseDTO.PostResponse;
 import com.blog.responseDTO.PostResponseDTO;
 import com.blog.service.PostService;
 
@@ -34,14 +35,22 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public List<PostResponseDTO> getAllPost(int pageNo, int pageSize) {
+	public PostResponse getAllPost(int pageNo, int pageSize) {
 		
 		Pageable page = PageRequest.of(pageNo, pageSize);
 		Page<Post> allPost = postRepository.findAll(page);
 		if (allPost != null) {
-			return allPost.getContent().stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList());
+			List<PostResponseDTO> allPosts = allPost.getContent().stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList());
+			PostResponse postResponse = new PostResponse();
+			postResponse.setPostResponse(allPosts);
+			postResponse.setPageNo(allPost.getNumber());
+			postResponse.setPageSize(allPost.getSize());
+			postResponse.setTotalElements(allPost.getTotalElements());
+			postResponse.setTotalPages(allPost.getTotalPages());
+			postResponse.setLast(allPost.isLast());
+			return postResponse;
 		}
-		return new ArrayList<PostResponseDTO>();
+		return new PostResponse();
 	}
 
 	@Override
@@ -60,7 +69,6 @@ public class PostServiceImpl implements PostService {
 		dbPost.setTitle(post.getTitle());
 		dbPost.setDescription(post.getDescription());
 		dbPost.setContent(post.getContent());
-		
 		Post updatedPost = postRepository.save(dbPost);
 		return mapPostToPostResponseDTO(updatedPost);
 	}
