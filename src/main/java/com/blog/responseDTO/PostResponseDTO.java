@@ -1,5 +1,9 @@
 package com.blog.responseDTO;
 
+import java.util.List;
+
+import com.blog.entity.Comment;
+
 import lombok.Data;
 
 @Data
@@ -12,5 +16,7 @@ public class PostResponseDTO {
 	private String description;
 	
 	private String content;
+	
+	private List<Comment> comment;
 	
 }
