@@ -1,7 +1,5 @@
 package com.blog.controller;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +20,7 @@ import com.blog.requestDTO.PostRequestDTO;
 import com.blog.responseDTO.PostResponse;
 import com.blog.responseDTO.PostResponseDTO;
 import com.blog.service.PostService;
+import com.blog.utils.AppConstants;
 
 @RestController
 @RequestMapping("/api")
@@ -39,10 +38,12 @@ public class PostController {
 	
 	@RequestMapping(value = "/getAllPost",method = RequestMethod.GET)
 	public ResponseEntity<PostResponse> getALLPost(
-			@RequestParam(value="pageNo", defaultValue = "0", required = false) int pageNo,
-			@RequestParam(value="pageSize", defaultValue = "5", required = false) int pageSize
+			@RequestParam(value="pageNo", defaultValue = AppConstants.DEFAULT_PAGE_NO, required = false) int pageNo,
+			@RequestParam(value="pageSize", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+			@RequestParam(value="sortBy", defaultValue = AppConstants.DEFAULT_PAGE_SORT_BY, required = false) String sortBy,
+			@RequestParam(value="ascDir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String ascDir
 			){
-		PostResponse allPost = postService.getAllPost(pageNo, pageSize);
+		PostResponse allPost = postService.getAllPost(pageNo, pageSize, sortBy, ascDir);
 		 return new ResponseEntity<PostResponse>(allPost, HttpStatus.OK);
 	}
 	

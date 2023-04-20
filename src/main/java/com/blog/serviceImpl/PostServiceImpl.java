@@ -1,6 +1,5 @@
 package com.blog.serviceImpl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.blog.entity.Post;
@@ -35,9 +35,12 @@ public class PostServiceImpl implements PostService {
 	}
 
 	@Override
-	public PostResponse getAllPost(int pageNo, int pageSize) {
+	public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String ascDir) {
 		
-		Pageable page = PageRequest.of(pageNo, pageSize);
+		Sort sort = ascDir.equalsIgnoreCase(Sort.Direction.ASC.name())?Sort.by(sortBy).ascending():
+			Sort.by(sortBy).descending();
+		
+		Pageable page = PageRequest.of(pageNo, pageSize, sort);
 		Page<Post> allPost = postRepository.findAll(page);
 		if (allPost != null) {
 			List<PostResponseDTO> allPosts = allPost.getContent().stream().map(post -> mapPostToPostResponseDTO(post)).collect(Collectors.toList());

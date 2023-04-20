@@ -14,7 +14,7 @@ public interface PostService {
 
 	public PostResponseDTO savePost(PostRequestDTO postRequestDTO);
 	
-	public PostResponse getAllPost(int pageNo, int pageSize);
+	public PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String ascDir);
 	
 	public PostResponseDTO findPostById(Long postId);
 	
