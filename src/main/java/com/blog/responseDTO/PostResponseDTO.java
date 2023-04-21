@@ -17,6 +17,6 @@ public class PostResponseDTO {
 	
 	private String content;
 	
-	private List<Comment> comment;
+	private List<CommentResponseDTO> comment;
 	
 }

@@ -1,5 +1,6 @@
 package com.blog.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -16,11 +17,16 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -53,7 +59,8 @@ public class Post {
 	private Date modifiedDate;
 	
 	@OneToMany(mappedBy = "post", fetch =FetchType.LAZY, cascade = CascadeType.ALL)
-	private List<Comment> comment;
+	@JsonManagedReference
+	private List<Comment> comment = new ArrayList<Comment>();
 	
 	@PreUpdate
 	@PrePersist

@@ -3,6 +3,7 @@ package com.blog.serviceImpl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +24,9 @@ public class PostServiceImpl implements PostService {
 
 	@Autowired
 	private PostRepository postRepository;
+	
+	@Autowired
+	private ModelMapper mapper;
 
 	@Override
 	public PostResponseDTO savePost(PostRequestDTO postRequestDTO) {
@@ -86,20 +90,29 @@ public class PostServiceImpl implements PostService {
 	
 	//convert postRequestDTO to Post Entity
 	private Post mapPostRequestDTOToPostEntity(PostRequestDTO postRequestDTO) {
-		Post post = new Post();
-		post.setTitle(postRequestDTO.getTitle());
-		post.setDescription(postRequestDTO.getDescription());
-		post.setContent(postRequestDTO.getContent());
+		Post post = mapper.map(postRequestDTO, Post.class);
+		
+		/*
+		 * Post post = new Post(); post.setTitle(postRequestDTO.getTitle());
+		 * post.setDescription(postRequestDTO.getDescription());
+		 * post.setContent(postRequestDTO.getContent());
+		 */
 		return post;
 	}
 	
 	//convert Post Entity to postResponseDTO
 	private PostResponseDTO mapPostToPostResponseDTO(Post post) {
-		PostResponseDTO postResponseDTO = new PostResponseDTO();
-		postResponseDTO.setId(post.getId());
-		postResponseDTO.setTitle(post.getTitle());
-		postResponseDTO.setDescription(post.getDescription());
-		postResponseDTO.setContent(post.getContent());
+		
+		PostResponseDTO postResponseDTO = mapper.map(post, PostResponseDTO.class);
+		
+		
+		/*
+		 * PostResponseDTO postResponseDTO = new PostResponseDTO();
+		 * postResponseDTO.setId(post.getId());
+		 * postResponseDTO.setTitle(post.getTitle());
+		 * postResponseDTO.setDescription(post.getDescription());
+		 * postResponseDTO.setContent(post.getContent());
+		 */
 		
 		return postResponseDTO;
 	}
