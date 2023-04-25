@@ -1,5 +1,8 @@
 package com.blog.config;
 
+
+
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,8 +19,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-import com.blog.security.CustomUserDetailsService;
-
 
 @Configuration
 @EnableMethodSecurity
@@ -29,6 +30,7 @@ public class SecurityConfig {
 		this.userDetailsService = userDetailsService;
 	}
 	
+	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
 		return configuration.getAuthenticationManager();
 	}
@@ -40,10 +42,13 @@ public class SecurityConfig {
 	 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable().authorizeHttpRequests((authorize) -> 
-				//authorize.anyRequest().authenticated()    //authorize all the request for the all the user
-		authorize.antMatchers(HttpMethod.GET, "/api/**").permitAll()
-				).httpBasic(Customizer.withDefaults());
+		http.csrf().disable()
+        .authorizeHttpRequests((authorize) ->
+                //authorize.anyRequest().authenticated()
+                authorize.antMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .antMatchers("/api/auth/**").permitAll()
+                        .anyRequest().authenticated()
+				);
 
 	return http.build();
 	}
