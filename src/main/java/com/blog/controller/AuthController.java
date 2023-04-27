@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.blog.requestDTO.LoginDTO;
+import com.blog.requestDTO.RegisterDTO;
 import com.blog.service.AuthService;
 
 @RestController
@@ -26,6 +27,12 @@ public class AuthController {
 		String msg = authService.login(loginDTO);
 		
 		return new ResponseEntity<String>(msg, HttpStatus.OK);
+	}
+	
+	@PostMapping({"/register", "/signup"})
+	public ResponseEntity<String> userRegister(@RequestBody RegisterDTO registerDTO){
+		String msg = authService.register(registerDTO);
+		return new ResponseEntity<String>(msg, HttpStatus.CREATED);
 	}
 	
 }

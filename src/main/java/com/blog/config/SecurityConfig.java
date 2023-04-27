@@ -42,15 +42,13 @@ public class SecurityConfig {
 	 
 	@Bean
 	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		http.csrf().disable()
-        .authorizeHttpRequests((authorize) ->
-                //authorize.anyRequest().authenticated()
-                authorize.antMatchers(HttpMethod.GET, "/api/**").permitAll()
-                        .antMatchers("/api/auth/**").permitAll()
-                        .anyRequest().authenticated()
-				);
+		http.csrf().disable().authorizeHttpRequests((authorize) ->
+		// authorize.anyRequest().authenticated() //authorize all the request for the
+		// all the user
+		authorize.antMatchers(HttpMethod.GET, "/api/**").permitAll()
+		.antMatchers("/api/auth/**").permitAll()).httpBasic(Customizer.withDefaults());
 
-	return http.build();
+		return http.build();
 	}
 	
 	
